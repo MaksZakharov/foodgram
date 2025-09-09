@@ -13,6 +13,7 @@ services:
     env_file: .env
     volumes:
       - ../backend:/app
+      - ../data:/app/data
     depends_on:
       - db
 
