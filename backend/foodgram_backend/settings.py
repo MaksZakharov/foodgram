@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_yasg",
     "api",
+    "users",
+    "recipes",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,5 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
     ],
 }
+
+AUTH_USER_MODEL = "users.User"
