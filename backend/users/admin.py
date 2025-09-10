@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from .models import User, Follow
+
 
 User = get_user_model()
 
@@ -12,3 +14,12 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ("username", "email")
     list_filter = ("is_staff", "is_superuser")
     ordering = ("id",)
+
+
+@admin.register(Follow)
+class FollowAdmin(admin.ModelAdmin):
+    """Админка для управления подписками."""
+
+    list_display = ("id", "user", "author")
+    search_fields = ("user__username", "author__username")
+    list_filter = ("user", "author")

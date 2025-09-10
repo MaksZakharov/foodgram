@@ -32,6 +32,7 @@ class IngredientAmountInline(admin.TabularInline):
 
     model = IngredientAmount
     extra = 1
+    autocomplete_fields = ("ingredient",)
 
 
 @admin.register(Recipe)
@@ -46,7 +47,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "pub_date",
         "favorites_count",
     )
-    search_fields = ("name", "author__email")
+    search_fields = ("name", "author__username", "author__email")
     list_filter = ("tags",)
     ordering = ("-pub_date",)
     inlines = (IngredientAmountInline,)
