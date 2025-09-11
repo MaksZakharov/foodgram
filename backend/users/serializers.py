@@ -1,5 +1,6 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
 from .models import User  # твоя кастомная модель пользователя
 
 
@@ -27,6 +28,7 @@ class CustomUserSerializer(UserSerializer):
     """Сериализатор для отображения пользователя (ReDoc)."""
 
     is_subscribed = serializers.SerializerMethodField()
+    avatar = Base64ImageField(required=False, allow_null=True)
 
     class Meta(UserSerializer.Meta):
         model = User
@@ -37,6 +39,7 @@ class CustomUserSerializer(UserSerializer):
             "first_name",
             "last_name",
             "is_subscribed",
+            "avatar",
         )
 
     def get_is_subscribed(self, obj):
