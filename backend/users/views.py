@@ -12,7 +12,11 @@ class UserViewSet(DjoserUserViewSet):
 
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve", "create"]:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
 
     @action(
         detail=True,
