@@ -70,12 +70,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         """Добавить или удалить рецепт из избранного."""
         recipe = self.get_object()
+
         if request.method == "POST":
-            Favorite.objects.get_or_create(user=request.user, recipe=recipe)
+            if Favorite.objects.filter(user=request.user, recipe=recipe).exists():
+                return Response(
+                    {"errors": "Рецепт уже в избранном."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            Favorite.objects.create(user=request.user, recipe=recipe)
             serializer = ShortRecipeSerializer(recipe, context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         if request.method == "DELETE":
-            Favorite.objects.filter(user=request.user, recipe=recipe).delete()
+            fav_item = Favorite.objects.filter(user=request.user, recipe=recipe)
+            if not fav_item.exists():
+                return Response(
+                    {"errors": "Рецепта нет в избранном."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            fav_item.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
