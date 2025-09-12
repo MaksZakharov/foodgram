@@ -13,3 +13,4 @@ python-dotenv==1.0.0
 drf-yasg==1.21.7
 djangorestframework-simplejwt==5.3.1
 drf-extra-fields==3.5.0
+django-filter==23.5

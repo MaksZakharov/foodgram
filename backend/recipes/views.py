@@ -1,9 +1,13 @@
 from django.db.models import Sum
 from django.http import HttpResponse
-from rest_framework import viewsets, permissions, status, filters
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import BaseFilterBackend
+from django.shortcuts import get_object_or_404
+from api.permissions import IsAuthorOrReadOnly
+
 
 from .models import Recipe, Ingredient, Tag, Favorite, ShoppingCart, IngredientAmount
 from .serializers import (
@@ -12,21 +16,50 @@ from .serializers import (
     TagSerializer,
     IngredientSerializer,
 )
+from api.filters import RecipeFilter
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для рецептов: CRUD, избранное, корзина, фильтры."""
 
     queryset = Recipe.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_serializer_class(self):
         if self.request.method in ("POST", "PATCH", "PUT"):
             return RecipeWriteSerializer
         return RecipeReadSerializer
 
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["author__id", "tags__slug"]
+    def perform_create(self, serializer):
+        recipe = serializer.save(author=self.request.user)
+        read_serializer = RecipeReadSerializer(
+            recipe, context={"request": self.request}
+        )
+        self.response_data = read_serializer.data
+
+    def perform_update(self, serializer):
+        recipe = serializer.save()
+        read_serializer = RecipeReadSerializer(
+            recipe, context={"request": self.request}
+        )
+        self.response_data = read_serializer.data
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(self.response_data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(self.response_data, status=status.HTTP_200_OK)
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RecipeFilter
 
     @action(
         detail=True,
@@ -78,6 +111,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response = HttpResponse(content, content_type="text/plain")
         response["Content-Disposition"] = 'attachment; filename="shopping_list.txt"'
         return response
+
+    @action(detail=True, methods=["get"], url_path="get-link")
+    def get_link(self, request, pk=None):
+        """Получить короткую ссылку на рецепт."""
+        recipe = get_object_or_404(Recipe, pk=pk)
+        return Response({"short-link": f"http://{request.get_host()}/s/{recipe.id}/"})
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
