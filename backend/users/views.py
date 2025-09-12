@@ -112,7 +112,15 @@ class UserViewSet(DjoserUserViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
-            Follow.objects.filter(user=request.user, author=author).delete()
+            subscription = Follow.objects.filter(
+                user=request.user, author=author
+            )
+            if not subscription.exists():
+                return Response(
+                    {'errors': 'Вы не подписаны на этого пользователя.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
