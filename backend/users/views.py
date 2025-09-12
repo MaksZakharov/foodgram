@@ -2,9 +2,14 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from .models import User, Follow
-from .serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer, SubscriptionSerializer
+
+
+class LimitPagination(PageNumberPagination):
+    page_size_query_param = "limit"
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -12,6 +17,8 @@ class UserViewSet(DjoserUserViewSet):
 
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
+    lookup_field = "id"
+    lookup_url_kwarg = "id"
 
     def get_permissions(self):
         if self.action in ["list", "retrieve", "create"]:
@@ -77,8 +84,13 @@ class UserViewSet(DjoserUserViewSet):
                     {"errors": "Нельзя подписаться на самого себя."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            Follow.objects.get_or_create(user=request.user, author=author)
-            serializer = CustomUserSerializer(author, context={"request": request})
+            if Follow.objects.filter(user=request.user, author=author).exists():
+                return Response(
+                    {"errors": "Вы уже подписаны на этого автора."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            Follow.objects.create(user=request.user, author=author)
+            serializer = SubscriptionSerializer(author, context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
@@ -91,7 +103,9 @@ class UserViewSet(DjoserUserViewSet):
     def subscriptions(self, request):
         """Список авторов, на которых подписан текущий пользователь."""
         authors = User.objects.filter(following__user=request.user)
-        serializer = CustomUserSerializer(
-            authors, many=True, context={"request": request}
+        paginator = LimitPagination()
+        page = paginator.paginate_queryset(authors, request)
+        serializer = SubscriptionSerializer(
+            page, many=True, context={"request": request}
         )
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return paginator.get_paginated_response(serializer.data)
