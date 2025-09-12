@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 from .models import User
-from recipes.models import Recipe
+from recipes.short_serializers import ShortRecipeSerializer
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -51,22 +51,6 @@ class CustomUserSerializer(UserSerializer):
         return False
 
 
-class RecipeShortSerializer(serializers.ModelSerializer):
-    """Укороченный рецепт для отображения в подписках."""
-
-    image = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Recipe
-        fields = ("id", "name", "image", "cooking_time")
-
-    def get_image(self, obj):
-        request = self.context.get("request")
-        if obj.image:
-            return request.build_absolute_uri(obj.image.url)
-        return ""
-
-
 class SubscriptionSerializer(serializers.ModelSerializer):
     """Сериализатор для подписок (с рецептами и их количеством)."""
 
@@ -102,7 +86,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         recipes = obj.recipes.all()
         if recipes_limit and recipes_limit.isdigit():
             recipes = recipes[: int(recipes_limit)]
-        return RecipeShortSerializer(recipes, many=True, context=self.context).data
+        return ShortRecipeSerializer(recipes, many=True, context=self.context).data
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()

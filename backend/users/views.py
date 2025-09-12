@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
 from .models import User, Follow
-from .serializers import CustomUserSerializer, SubscriptionSerializer
+from .serializers import CustomUserSerializer, SubscriptionSerializer, ShortRecipeSerializer
 
 
 class LimitPagination(PageNumberPagination):
