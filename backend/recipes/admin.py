@@ -1,30 +1,35 @@
 from django.contrib import admin
+
 from recipes.models import (
-    Tag,
-    Ingredient,
-    Recipe,
-    IngredientAmount,
     Favorite,
+    Ingredient,
+    IngredientAmount,
+    Recipe,
     ShoppingCart,
+    Tag,
 )
 
 
+class NamedModelAdmin(admin.ModelAdmin):
+    """Базовый админ для моделей с названием (name)."""
+
+    ordering = ('name',)
+    search_fields = ('name',)
+
+
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(NamedModelAdmin):
     """Админка для модели Tag."""
 
-    list_display = ("id", "name", "color", "slug")
-    search_fields = ("name", "slug")
-    ordering = ("name",)
+    list_display = ('id', 'name', 'color', 'slug')
+    search_fields = ('name', 'slug')
 
 
 @admin.register(Ingredient)
-class IngredientAdmin(admin.ModelAdmin):
+class IngredientAdmin(NamedModelAdmin):
     """Админка для модели Ingredient."""
 
-    list_display = ("id", "name", "measurement_unit")
-    search_fields = ("name",)
-    ordering = ("name",)
+    list_display = ('id', 'name', 'measurement_unit')
 
 
 class IngredientAmountInline(admin.TabularInline):
@@ -32,7 +37,7 @@ class IngredientAmountInline(admin.TabularInline):
 
     model = IngredientAmount
     extra = 1
-    autocomplete_fields = ("ingredient",)
+    autocomplete_fields = ('ingredient',)
 
 
 @admin.register(Recipe)
@@ -40,36 +45,37 @@ class RecipeAdmin(admin.ModelAdmin):
     """Админка для модели Recipe."""
 
     list_display = (
-        "id",
-        "name",
-        "author",
-        "cooking_time",
-        "pub_date",
-        "favorites_count",
+        'id',
+        'name',
+        'author',
+        'cooking_time',
+        'pub_date',
+        'favorites_count',
     )
-    search_fields = ("name", "author__username", "author__email")
-    list_filter = ("tags",)
-    ordering = ("-pub_date",)
+    search_fields = ('name', 'author__username', 'author__email')
+    list_filter = ('tags',)
+    ordering = ('-pub_date',)
     inlines = (IngredientAmountInline,)
 
     def favorites_count(self, obj):
         """Количество добавлений рецепта в избранное."""
         return obj.favorites.count()
 
-    favorites_count.short_description = "В избранном"
+    favorites_count.short_description = 'В избранном'
+
+
+class UserRecipeAdmin(admin.ModelAdmin):
+    """Базовый админ для моделей с пользователем и рецептом."""
+
+    list_display = ('id', 'user', 'recipe')
+    search_fields = ('user__email', 'recipe__name')
 
 
 @admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
+class FavoriteAdmin(UserRecipeAdmin):
     """Админка для модели Favorite."""
-
-    list_display = ("id", "user", "recipe")
-    search_fields = ("user__email", "recipe__name")
 
 
 @admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
+class ShoppingCartAdmin(UserRecipeAdmin):
     """Админка для модели ShoppingCart."""
-
-    list_display = ("id", "user", "recipe")
-    search_fields = ("user__email", "recipe__name")
