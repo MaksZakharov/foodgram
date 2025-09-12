@@ -13,11 +13,20 @@ from .serializers import (
 
 
 class LimitPagination(PageNumberPagination):
+    """Кастомная пагинация с параметром limit."""
+
     page_size_query_param = 'limit'
 
 
 class UserViewSet(DjoserUserViewSet):
-    """Вьюсет пользователей с поддержкой подписок и аватара."""
+    """
+    Вьюсет для пользователей.
+
+    Расширяет базовый UserViewSet:
+    - управление аватаром;
+    - подписки (подписаться/отписаться);
+    - список подписок.
+    """
 
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
@@ -25,6 +34,7 @@ class UserViewSet(DjoserUserViewSet):
     lookup_url_kwarg = 'id'
 
     def get_permissions(self):
+        """Определяет права доступа для разных действий."""
         if self.action in ['list', 'retrieve', 'create']:
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
@@ -37,12 +47,14 @@ class UserViewSet(DjoserUserViewSet):
     )
     def avatar(self, request):
         """
-        Загрузка, обновление,
-        удаление и просмотр аватара текущего пользователя.
+        Загрузка, обновление, удаление и просмотр аватара текущего пользователя.
+
+        GET → вернуть ссылку на аватар.
+        POST/PUT → загрузить или обновить.
+        DELETE → удалить аватар.
         """
         user = request.user
 
-        # Просмотр аватара
         if request.method == 'GET':
             if not user.avatar:
                 return Response(
@@ -53,7 +65,6 @@ class UserViewSet(DjoserUserViewSet):
                 {'avatar': user.avatar.url}, status=status.HTTP_200_OK
             )
 
-        # Создание/обновление аватара
         if request.method in ['POST', 'PUT']:
             if not request.data.get('avatar'):
                 return Response(
@@ -70,12 +81,10 @@ class UserViewSet(DjoserUserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            # ⚡️ Чтобы пройти тесты Postman — возвращаем только avatar
             return Response(
                 {'avatar': user.avatar.url}, status=status.HTTP_200_OK
             )
 
-        # Удаление аватара
         if request.method == 'DELETE':
             if user.avatar:
                 user.avatar.delete(save=True)
@@ -83,15 +92,14 @@ class UserViewSet(DjoserUserViewSet):
 
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    @action(
-        detail=True,
-        methods=['post', 'delete'],
-        permission_classes=[permissions.IsAuthenticated],
-    )
-    def subscribe(self, request, id=None):
-        """Подписаться или отписаться от пользователя."""
-        author = self.get_object()
+    def _handle_subscription(self, request, author):
+        """
+        Универсальный метод для подписки/отписки на автора.
 
+        Аргументы:
+            request — текущий запрос.
+            author — пользователь, на которого подписываются.
+        """
         if request.method == 'POST':
             if request.user == author:
                 return Response(
@@ -122,6 +130,16 @@ class UserViewSet(DjoserUserViewSet):
                 )
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def subscribe(self, request, id=None):
+        """Подписаться или отписаться от пользователя."""
+        author = self.get_object()
+        return self._handle_subscription(request, author)
 
     @action(
         detail=False,
