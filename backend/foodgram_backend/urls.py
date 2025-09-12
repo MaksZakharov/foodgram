@@ -23,7 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
     path("api/", include("api.urls")),
-    path("api/auth/", include("djoser.urls.authtoken")),  # 🔑 JWT авторизация
+    path("api/auth/", include("djoser.urls.authtoken")),
     path(
         "api/docs/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),

@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.filters import BaseFilterBackend
 
 from .models import Recipe, Ingredient, Tag, Favorite, ShoppingCart, IngredientAmount
 from .serializers import (
@@ -88,11 +89,21 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
+class IngredientNameFilter(BaseFilterBackend):
+    """Фильтр по начальному совпадению имени ингредиента."""
+
+    def filter_queryset(self, request, queryset, view):
+        name = request.query_params.get("name")
+        if name:
+            return queryset.filter(name__istartswith=name)
+        return queryset
+
+
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет для ингредиентов с поиском по названию."""
 
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (permissions.AllowAny,)
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["^name"]  # поиск с начала строки
+    filter_backends = [IngredientNameFilter]
+    pagination_class = None
