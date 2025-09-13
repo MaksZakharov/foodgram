@@ -1,47 +1,61 @@
-.content {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  text-align: left;
-  justify-content: space-between;
+.pageWrapper {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.8s ease-in-out;
+  text-align: center;
 }
 
 .title {
-  font-family: "SF Pro Display", sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 54px;
-  line-height: 110%;
-  color: #000;
-  margin: 0 0 40px;
-  margin-top: 40px;
-  text-align: left;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2c3e50;
 }
 
 .subtitle {
-  font-family: 'Raleway', Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 110%;
-  color: #000;
-  margin: 0 0 24px;
+  font-size: 1.4rem;
+  margin: 20px 0 10px;
+  color: #34495e;
 }
 
-.text {
-  font-family: 'Raleway', Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 130%;
-  color: #000;
+.section {
+  margin-bottom: 20px;
 }
 
-.textItem {
-  margin: 0 0 16px;
+.techList {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: inline-block; 
+  text-align: left;      
 }
 
-@media screen and (max-width: 950px) {
-  .title {
-    font-size: 34px;
+.techList li {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

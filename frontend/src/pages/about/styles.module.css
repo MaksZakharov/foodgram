@@ -1,76 +1,63 @@
-.content {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  text-align: left;
-  justify-content: space-between;
+.pageWrapper {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.8s ease-in-out;
 }
 
 .title {
-  font-family: "SF Pro Display", sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 54px;
-  line-height: 110%;
-  color: #000;
-  margin: 0 0 40px;
-  margin-top: 40px;
-  text-align: left;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #2c3e50;
 }
 
 .subtitle {
-  font-family: "SF Pro Display", sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 110%;
-  color: #000;
-  margin: 0 0 24px;
+  font-size: 1.4rem;
+  margin: 20px 0 10px;
+  color: #34495e;
 }
 
-.additionalTitle {
-  font-family: "SF Pro Display", sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 120%;
-  color: #000;
-  margin: 0 0 24px;
+.section {
+  margin-bottom: 20px;
 }
 
-.text {
-  font-family: "SF Pro Display", sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 130%;
-  color: #000;
+.section p {
+  margin-bottom: 10px;
+  line-height: 1.6;
 }
 
-.textItem {
-  margin: 0 0 16px;
-}
-
-.textLink {
-  color: #4a61dd;
+a {
+  color: #3498db;
   text-decoration: none;
+  font-weight: 500;
 }
 
-@media screen and (max-width: 950px) {
-  .content {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding-bottom: 80px;
-  }
+a:hover {
+  text-decoration: underline;
+}
 
-  .title {
-    font-size: 34px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  .subtitle {
-    font-size: 26px;
-  }
-
-  .additionalTitle {
-    font-size: 22px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -1,55 +1,54 @@
-import { Title, Container, Main } from '../../components'
-import styles from './styles.module.css'
-import MetaTags from 'react-meta-tags'
+import React from "react";
+import styles from "./styles.module.css";
+import bgImage from "../../images/home-screen-bg.jpg";
 
-const About = ({ updateOrders, orders }) => {
-  
-  return <Main>
-    <MetaTags>
-      <title>О проекте</title>
-      <meta name="description" content="Фудграм - О проекте" />
-      <meta property="og:title" content="О проекте" />
-    </MetaTags>
-    
-    <Container>
-      <h1 className={styles.title}>Привет!</h1>
-      <div className={styles.content}>
-        <div>
-          <h2 className={styles.subtitle}>Что это за сайт?</h2>
-          <div className={styles.text}>
-            <p className={styles.textItem}>
-              Представляю вам проект, созданный во время обучения в Яндекс Практикуме. Этот проект — часть учебного курса, но он создан полностью самостоятельно.
-            </p>
-            <p className={styles.textItem}>
-              Цель этого сайта — дать возможность пользователям создавать и хранить рецепты на онлайн-платформе. Кроме того, можно скачать список продуктов, необходимых для
-              приготовления блюда, просмотреть рецепты друзей и добавить любимые рецепты в список избранных.
-            </p>
-            <p className={styles.textItem}>
-              Чтобы использовать все возможности сайта — нужна регистрация. Проверка адреса электронной почты не осуществляется, вы можете ввести любой email. 
-            </p>
-            <p className={styles.textItem}>
-              Заходите и делитесь своими любимыми рецептами!
-            </p>
-          </div>
-        </div>
-        <aside>
-          <h2 className={styles.additionalTitle}>
-            Ссылки
-          </h2>
-          <div className={styles.text}>
-            <p className={styles.textItem}>
-              Код проекта находится тут - <a href="#" className={styles.textLink}>Github</a>
-            </p>
-            <p className={styles.textItem}>
-              Автор проекта: <a href="#" className={styles.textLink}>Имя Автора</a>
-            </p>
-          </div>
-        </aside>
+const About = () => {
+  return (
+    <div
+      className={styles.pageWrapper}
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      <div className={styles.card}>
+        <h1 className={styles.title}>👋 Добро пожаловать в Foodgram!</h1>
+
+        <section className={styles.section}>
+          <p>
+            Foodgram — это онлайн-сервис для публикации и хранения рецептов.
+            Здесь вы можете делиться любимыми блюдами, сохранять рецепты в
+            избранное и формировать список покупок.
+          </p>
+          <p>
+            Проект создан во время обучения в <strong>Яндекс Практикуме</strong>,
+            но полностью реализован самостоятельно.
+          </p>
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.subtitle}>🔗 Ссылки</h2>
+          <p>
+            Код проекта:{" "}
+            <a
+              href="https://github.com/MaksZakharov/foodgram"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+          </p>
+          <p>
+            Автор проекта:{" "}
+            <a
+              href="https://github.com/MaksZakharov"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Maks Zakharov
+            </a>
+          </p>
+        </section>
       </div>
-      
-    </Container>
-  </Main>
-}
+    </div>
+  );
+};
 
-export default About
-
+export default About;

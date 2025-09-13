@@ -1,43 +1,29 @@
-import { Title, Container, Main } from '../../components'
-import styles from './styles.module.css'
-import MetaTags from 'react-meta-tags'
+import React from "react";
+import styles from "./styles.module.css";
+import bgImage from "../../images/home-screen-bg.jpg";
 
 const Technologies = () => {
-  
-  return <Main>
-    <MetaTags>
-      <title>О проекте</title>
-      <meta name="description" content="Фудграм - Технологии" />
-      <meta property="og:title" content="О проекте" />
-    </MetaTags>
-    
-    <Container>
-      <h1 className={styles.title}>Технологии</h1>
-      <div className={styles.content}>
-        <div>
-          <h2 className={styles.subtitle}>Технологии, которые применены в этом проекте:</h2>
-          <div className={styles.text}>
-            <ul className={styles.textItem}>
-              <li className={styles.textItem}>
-                Python
-              </li>
-              <li className={styles.textItem}>
-                Django
-              </li>
-              <li className={styles.textItem}>
-                Django REST Framework
-              </li>
-              <li className={styles.textItem}>
-                Djoser
-              </li>
-            </ul>
-          </div>
-        </div>
+  return (
+    <div
+      className={styles.pageWrapper}
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      <div className={styles.card}>
+        <h1 className={styles.title}>⚙️ Технологии</h1>
+
+        <section className={styles.section}>
+          <h2 className={styles.subtitle}>Стек проекта</h2>
+          <ul className={styles.techList}>
+            <li>⭐ Backend: Django + Djoser</li>
+            <li>⭐ Frontend: React + React Router</li>
+            <li>⭐ База данных: PostgreSQL</li>
+            <li>⭐ Контейнеризация: Docker</li>
+            <li>⭐ API-документация: ReDoc</li>
+          </ul>
+        </section>
       </div>
-      
-    </Container>
-  </Main>
-}
+    </div>
+  );
+};
 
-export default Technologies
-
+export default Technologies;
