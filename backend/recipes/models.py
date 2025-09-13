@@ -2,17 +2,21 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from recipes.constants import MAX_LENGTH_DEFAULT
+
 
 class Tag(models.Model):
     """Тег для классификации рецептов."""
 
     name = models.CharField(
-        max_length=200, unique=True, verbose_name='Название'
+        max_length=MAX_LENGTH_DEFAULT, unique=True, verbose_name='Название'
     )
     color = models.CharField(
         max_length=7, unique=True, verbose_name='Цвет (HEX)'
     )
-    slug = models.SlugField(max_length=200, unique=True, verbose_name='Слаг')
+    slug = models.SlugField(
+        max_length=MAX_LENGTH_DEFAULT, unique=True, verbose_name='Слаг'
+    )
 
     class Meta:
         verbose_name = 'Тег'
@@ -26,9 +30,11 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Ингредиент с единицей измерения."""
 
-    name = models.CharField(max_length=200, verbose_name='Название')
+    name = models.CharField(
+        max_length=MAX_LENGTH_DEFAULT, verbose_name='Название'
+    )
     measurement_unit = models.CharField(
-        max_length=200, verbose_name='Единица измерения'
+        max_length=MAX_LENGTH_DEFAULT, verbose_name='Единица измерения'
     )
 
     class Meta:
@@ -54,7 +60,9 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='Автор',
     )
-    name = models.CharField(max_length=200, verbose_name='Название')
+    name = models.CharField(
+        max_length=MAX_LENGTH_DEFAULT, verbose_name='Название'
+    )
     image = models.ImageField(
         upload_to='recipes/images/', verbose_name='Картинка'
     )
