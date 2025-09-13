@@ -1,17 +1,22 @@
 import os
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
-SECRET_KEY = (
-    'django-insecure-f27w6v8%bpcwx7%b3gv@5%xeroor52j^pj3g)jz)w_imhlr(xk'
-)
+DEBUG = os.getenv('DEBUG', default='False') == 'True'
 
-DEBUG = True
+ALLOWED_HOSTS = os.getenv(
+    'ALLOWED_HOSTS', default='127.0.0.1,localhost'
+).split(',')
 
-ALLOWED_HOSTS = []
-
+PAGINATION_PAGE_SIZE = 6
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -116,7 +121,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.LimitPageNumberPagination',
-    'PAGE_SIZE': 6,
+    'PAGE_SIZE': PAGINATION_PAGE_SIZE,
 }
 
 DJOSER = {
