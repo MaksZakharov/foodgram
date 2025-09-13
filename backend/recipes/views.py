@@ -175,7 +175,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
 
         lines = [
-            f'{item["ingredient__name"]} ({item["ingredient__measurement_unit"]}) — {item["total"]}'
+            f'{item["ingredient__name"]} '
+            f'({item["ingredient__measurement_unit"]}) — '
+            f'{item["total"]}'
             for item in ingredients
         ]
         content = '\n'.join(lines)

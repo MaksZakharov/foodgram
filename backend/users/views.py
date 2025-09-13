@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from .models import Follow, User
 from .serializers import (
     CustomUserSerializer,
-    ShortRecipeSerializer,  # noqa: F401
     SubscriptionSerializer,  # noqa: F401
 )
 
@@ -47,7 +46,8 @@ class UserViewSet(DjoserUserViewSet):
     )
     def avatar(self, request):
         """
-        Загрузка, обновление, удаление и просмотр аватара текущего пользователя.
+        Загрузка, обновление, удаление
+        и просмотр аватара текущего пользователя.
 
         GET → вернуть ссылку на аватар.
         POST/PUT → загрузить или обновить.

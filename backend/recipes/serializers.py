@@ -69,7 +69,8 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             related_field — имя связанного поля (favorites/shopping_cart).
 
         Возвращает:
-            True, если текущий пользователь связан с объектом через указанное поле.
+            True, если текущий пользователь
+            связан с объектом через указанное поле.
         """
         request = self.context.get('request')
         return (

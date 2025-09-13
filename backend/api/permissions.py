@@ -18,7 +18,8 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
             view — представление (View), к которому обращается пользователь.
 
         Возвращает:
-            True — если запрос безопасный (чтение) или пользователь аутентифицирован.
+            True — если запрос безопасный (чтение)
+            или пользователь аутентифицирован.
             False — если пользователь неавторизован и запрос изменяет данные.
         """
         if request.method in permissions.SAFE_METHODS:
@@ -35,7 +36,8 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
             obj — объект рецепта.
 
         Возвращает:
-            True — если запрос безопасный или пользователь является автором объекта.
+            True — если запрос безопасный
+            или пользователь является автором объекта.
             False — во всех остальных случаях.
         """
         if request.method in permissions.SAFE_METHODS:
