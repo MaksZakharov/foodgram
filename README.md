@@ -121,3 +121,7 @@
 
 ## 👨‍💻 Автор проекта
 **Maks Zakharov**
+
+## Проект доступен по адресу
+
+**foodgram.3utilities.com**
