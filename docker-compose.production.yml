@@ -1,5 +1,3 @@
-version: '3.8'
-
 volumes:
   pg_data_production:
   static:
@@ -22,12 +20,7 @@ services:
       - db
 
   frontend:
-    image: flintman16/foodgram_frontend
-    volumes:
-      - static:/static
-
-  gateway:
-    image: nginx:1.25.4-alpine
+    image: flintman16/foodgram_frontend   # уже nginx с билдом внутри
     ports:
       - "80:80"
     volumes:
@@ -35,4 +28,3 @@ services:
       - media:/media
     depends_on:
       - backend
-      - frontend

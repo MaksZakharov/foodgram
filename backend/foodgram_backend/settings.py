@@ -16,6 +16,12 @@ ALLOWED_HOSTS = os.getenv(
     'ALLOWED_HOSTS', default='127.0.0.1,localhost'
 ).split(',')
 
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    ('http://localhost,http://127.0.0.1,http://foodgram.3utilities.com'),
+).split(',')
+
+
 PAGINATION_PAGE_SIZE = 6
 
 INSTALLED_APPS = [

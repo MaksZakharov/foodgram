@@ -4,9 +4,6 @@ FROM python:3.10
 # Рабочая директория внутри контейнера
 WORKDIR /app
 
-# Устанавливаем gunicorn
-RUN pip install gunicorn==23.0.0
-
 # Копируем файл зависимостей
 COPY requirements.txt .
 
