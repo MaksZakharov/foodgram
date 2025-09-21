@@ -77,13 +77,22 @@ jobs:
             sudo rm -rf ~/foodgram
             mkdir ~/foodgram
 
-      - name: Copy config files
+      - name: Copy docker-compose.production.yml
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.production.yml,infra/nginx.conf"
+          source: "docker-compose.production.yml"
+          target: "foodgram/"
+
+      - name: Copy nginx.conf
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "infra/nginx.conf"
           target: "foodgram/"
 
       - name: Executing remote ssh commands to deploy
