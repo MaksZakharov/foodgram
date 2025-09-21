@@ -74,7 +74,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            rm -rf ~/foodgram
+            sudo rm -rf ~/foodgram
             mkdir ~/foodgram
 
       - name: Copy docker-compose.production.yml
@@ -110,6 +110,10 @@ jobs:
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --noinput
             sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/static/. /static/
             sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/media/. /media/
+            echo "===== Проверка файлов ====="
+            ls -l ~/foodgram
+            echo "===== Статус контейнеров ====="
+            sudo docker compose -f docker-compose.production.yml ps
 
   send_message:
     runs-on: ubuntu-latest
