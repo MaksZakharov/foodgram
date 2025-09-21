@@ -67,14 +67,33 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Copy config files via ssh
+      - name: Clean foodgram folder on server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            rm -rf ~/foodgram
+            mkdir ~/foodgram
+
+      - name: Copy docker-compose.production.yml
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.production.yml,infra/nginx.conf"
-          target: "foodgram"
+          source: "docker-compose.production.yml"
+          target: "foodgram/"
+
+      - name: Copy nginx.conf
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "infra/nginx.conf"
+          target: "foodgram/nginx.conf"
 
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -101,4 +120,3 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: 🎉 Деплой Foodgram успешно выполнен! 🚀
-          
