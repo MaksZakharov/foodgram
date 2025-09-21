@@ -1,8 +1,7 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-
 from recipes.short_serializers import ShortRecipeSerializer
+from rest_framework import serializers
 
 from .models import User
 

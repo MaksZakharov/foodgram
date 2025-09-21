@@ -1,5 +1,4 @@
 import django_filters
-
 from api.utils import filter_by_user_relation
 from recipes.models import Recipe
 
