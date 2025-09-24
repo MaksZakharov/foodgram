@@ -46,13 +46,11 @@ services:
 
   frontend:
     image: flintman16/foodgram_frontend:latest
-    volumes:
-      - ./frontend/build:/usr/share/nginx/html
 
   gateway:
     image: nginx:1.25.4-alpine
     ports:
-      - "127.0.0.1:80:80"
+      - "80:80"
     depends_on:
       - backend
       - frontend
@@ -61,4 +59,3 @@ services:
       - static:/static
       - media:/media
       - docs:/docs
-      - ./frontend/build:/usr/share/nginx/html
