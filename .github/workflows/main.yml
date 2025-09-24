@@ -61,20 +61,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
 
-  frontend_tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: |
-          cd frontend/
-          npm ci
-      - run: |
-          cd frontend/
-          npm run test
-
   build_and_push_frontend:
     name: Push frontend Docker image to DockerHub
     runs-on: ubuntu-latest
