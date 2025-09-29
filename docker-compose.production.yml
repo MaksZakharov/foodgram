@@ -3,6 +3,7 @@ volumes:
   static:
   media:
   docs:
+  frontend_build:   # общий том для билда фронта
 
 services:
   db:
@@ -24,7 +25,7 @@ services:
         condition: service_healthy
     volumes:
       - static:/app/static
-      - media:/app/media
+      - ./media:/app/media
       - docs:/docs
     command: >
       bash -c "
@@ -34,17 +35,21 @@ services:
 
   frontend:
     image: flintman16/foodgram_frontend:latest
+    volumes:
+      - frontend_build:/app/build
 
   gateway:
     image: nginx:1.25.4-alpine
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - backend
       - frontend
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./frontend/build:/frontend_build
+      - frontend_build:/frontend_build
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - static:/static
-      - media:/media
-      - docs:/docs
+      - ./media:/media
+      - ./docs:/docs
