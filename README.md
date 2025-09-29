@@ -1,4 +1,6 @@
-# 🍲 Foodgram — продуктовый помощник
+# Foodgram — продуктовый помощник
+
+![Foodgram CI/CD](https://github.com/MaksZakharov/foodgram/actions/workflows/main.yml/badge.svg)
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.x-green.svg)](https://www.djangoproject.com/)
@@ -10,11 +12,11 @@
 **Foodgram** — это онлайн-сервис для публикации и хранения рецептов.  
 Здесь пользователи могут делиться любимыми блюдами, сохранять рецепты в избранное и формировать список покупок.
 
-📌 Проект создан в рамках обучения в **Яндекс Практикуме**, но полностью реализован самостоятельно. 
+Проект создан в рамках обучения в **Яндекс Практикуме**, но полностью реализован самостоятельно. 
 
 ---
 
-## 🚀 Возможности проекта
+## Возможности проекта
 
 - Регистрация и авторизация пользователей.
 - Публикация рецептов с фотографиями, ингредиентами и тегами.
@@ -26,7 +28,7 @@
 
 ---
 
-## 🛠 Технологии
+## Технологии
 
 - **Backend**: Python 3.10, Django, Django REST Framework, Djoser  
 - **Frontend**: React, Node.js  
@@ -36,7 +38,7 @@
 
 ---
 
-## ⚙️ Установка и запуск проекта (Docker)
+## Установка и запуск проекта (Docker)
 
 1. Клонируйте репозиторий:
    ```bash
@@ -77,7 +79,7 @@
 
 ---
 
-## 🔗 Доступ к сервису
+## Доступ к сервису
 
 - Главная страница: [http://localhost](http://localhost)  
 - API: [http://localhost/api/](http://localhost/api/)  
@@ -85,7 +87,7 @@
 
 ---
 
-## 📋 Примеры API-запросов
+## Примеры API-запросов
 
 - **Регистрация пользователя**
   ```
@@ -119,9 +121,15 @@
 
 ---
 
-## 👨‍💻 Автор проекта
+## Автор проекта
+
 **Maks Zakharov**
 
-## Проект доступен по адресу
+## Проект доступен по адресу:
 
-**foodgram.3utilities.com**
+[foodgram.3utilities.com](http://foodgram.3utilities.com)
+
+## Документация API: 
+
+[http://foodgram.3utilities.com/api/docs/](http://foodgram.3utilities.com/api/docs/)
+
