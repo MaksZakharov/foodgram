@@ -1,6 +1,13 @@
 from django.contrib import admin
-from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingCart, Tag)
+
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientAmount,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 
 
 class NamedModelAdmin(admin.ModelAdmin):
@@ -30,6 +37,7 @@ class IngredientAmountInline(admin.TabularInline):
 
     model = IngredientAmount
     extra = 1
+    min_num = 1
     autocomplete_fields = ('ingredient',)
 
 
@@ -50,6 +58,7 @@ class RecipeAdmin(admin.ModelAdmin):
     ordering = ('-pub_date',)
     inlines = (IngredientAmountInline,)
 
+    @admin.display(description="В избранном")
     def favorites_count(self, obj):
         """Количество добавлений рецепта в избранное."""
         return obj.favorites.count()
