@@ -17,8 +17,7 @@ ALLOWED_HOSTS = os.getenv(
 ).split(',')
 
 CSRF_TRUSTED_ORIGINS = os.getenv(
-    'CSRF_TRUSTED_ORIGINS',
-    ('http://localhost,http://127.0.0.1,http://foodgram.3utilities.com'),
+    'CSRF_TRUSTED_ORIGINS', ''
 ).split(',')
 
 
@@ -34,10 +33,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
-    'drf_yasg',
-    'api',
+    'drf_yasg',    
     'users',
     'recipes',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -132,8 +131,7 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
-    'SERIALIZERS': {
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
+    'SERIALIZERS': {        
         'user': 'users.serializers.CustomUserSerializer',
         'current_user': 'users.serializers.CustomUserSerializer',
     },
