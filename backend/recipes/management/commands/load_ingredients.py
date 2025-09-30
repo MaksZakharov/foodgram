@@ -3,7 +3,11 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+
 from recipes.models import Ingredient
+
+DATA_DIR = os.path.join(settings.BASE_DIR, "data")
+INGREDIENTS_FILE = os.path.join(DATA_DIR, "ingredients.csv")
 
 
 class Command(BaseCommand):
@@ -39,16 +43,19 @@ class Command(BaseCommand):
 
         Возвращает:
             None. Сообщения выводятся в stdout/stderr.
-        """
-        path = os.path.join(settings.BASE_DIR, 'data', 'ingredients.csv')
+        """        
 
-        if not os.path.exists(path):
-            self.stderr.write(self.style.ERROR(f'Файл не найден: {path}'))
+        if not os.path.exists(INGREDIENTS_FILE):
+            self.stderr.write(
+                self.style.ERROR(
+                    f"Файл не найден: {INGREDIENTS_FILE}"
+                )
+            )
             return
 
         created, skipped = 0, 0
 
-        with open(path, encoding='utf-8') as csvfile:
+        with open(INGREDIENTS_FILE, encoding="utf-8") as csvfile:
             reader = csv.reader(csvfile)
             for i, row in enumerate(reader, start=1):
                 if len(row) < 2:
