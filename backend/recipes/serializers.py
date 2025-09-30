@@ -1,5 +1,6 @@
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+
 from users.serializers import CustomUserSerializer
 
 from .models import Ingredient, IngredientAmount, Recipe, Tag
@@ -72,10 +73,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             связан с объектом через указанное поле.
         """
         request = self.context.get('request')
-        return (
-            request.user.is_authenticated
-            and getattr(obj, related_field).filter(user=request.user).exists()
-        )
+        if not request or not hasattr(request, "user") or not request.user.is_authenticated:
+            return False
+        return getattr(obj, related_field).filter(user=request.user).exists()
 
     def get_is_favorited(self, obj):
         """Проверяет, добавлен ли рецепт в избранное текущего пользователя."""
@@ -88,8 +88,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         """Возвращает абсолютный URL изображения рецепта."""
         request = self.context.get('request')
-        if obj.image and hasattr(obj.image, 'url'):
+        if request and obj.image and hasattr(obj.image, 'url'):
             return request.build_absolute_uri(obj.image.url)
+        if obj.image and hasattr(obj.image, 'url'):
+            return obj.image.url
         return ''
 
     class Meta:

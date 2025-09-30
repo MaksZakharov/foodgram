@@ -1,7 +1,8 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from recipes.short_serializers import ShortRecipeSerializer
 from rest_framework import serializers
+
+from recipes.short_serializers import ShortRecipeSerializer
 
 from .models import User
 
@@ -58,6 +59,7 @@ class CustomUserSerializer(UserSerializer):
         """
         return (
             request
+            and hasattr(request, 'user')
             and request.user.is_authenticated
             and request.user.follower.filter(author=obj).exists()
         )

@@ -21,7 +21,7 @@ class NamedModelAdmin(admin.ModelAdmin):
 class TagAdmin(NamedModelAdmin):
     """Админка для модели Tag."""
 
-    list_display = ('id', 'name', 'color', 'slug')
+    list_display = ('id', 'name', 'slug')
     search_fields = ('name', 'slug')
 
 
