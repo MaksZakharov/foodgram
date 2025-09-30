@@ -56,43 +56,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     ingredients = IngredientAmountReadSerializer(
         many=True, source='ingredient_amounts', read_only=True
     )
-    image = serializers.SerializerMethodField()
+    image = Base64ImageField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-
-    def _is_related(self, obj, related_field):
-        """
-        Проверяет наличие связи рецепта с пользователем.
-
-        Аргументы:
-            obj — объект рецепта.
-            related_field — имя связанного поля (favorites/shopping_cart).
-
-        Возвращает:
-            True, если текущий пользователь
-            связан с объектом через указанное поле.
-        """
-        request = self.context.get('request')
-        if not request or not hasattr(request, "user") or not request.user.is_authenticated:
-            return False
-        return getattr(obj, related_field).filter(user=request.user).exists()
-
-    def get_is_favorited(self, obj):
-        """Проверяет, добавлен ли рецепт в избранное текущего пользователя."""
-        return self._is_related(obj, 'favorites')
-
-    def get_is_in_shopping_cart(self, obj):
-        """Проверяет, добавлен ли рецепт в корзину текущего пользователя."""
-        return self._is_related(obj, 'shopping_cart')
-
-    def get_image(self, obj):
-        """Возвращает абсолютный URL изображения рецепта."""
-        request = self.context.get('request')
-        if request and obj.image and hasattr(obj.image, 'url'):
-            return request.build_absolute_uri(obj.image.url)
-        if obj.image and hasattr(obj.image, 'url'):
-            return obj.image.url
-        return ''
 
     class Meta:
         model = Recipe
@@ -109,6 +75,35 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'is_in_shopping_cart',
         )
 
+    def _is_related(self, obj, related_field):
+        """
+        Проверяет наличие связи рецепта с пользователем.
+
+        Аргументы:
+            obj — объект рецепта.
+            related_field — имя связанного поля (favorites/shopping_cart).
+
+        Возвращает:
+            True, если текущий пользователь
+            связан с объектом через указанное поле.
+        """
+        request = self.context.get('request')
+        if (
+            not request
+            or not hasattr(request, 'user')
+            or not request.user.is_authenticated
+        ):
+            return False
+        return getattr(obj, related_field).filter(user=request.user).exists()
+
+    def get_is_favorited(self, obj):
+        """Проверяет, добавлен ли рецепт в избранное текущего пользователя."""
+        return self._is_related(obj, 'favorites')
+
+    def get_is_in_shopping_cart(self, obj):
+        """Проверяет, добавлен ли рецепт в корзину текущего пользователя."""
+        return self._is_related(obj, 'shopping_cart')
+
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для создания и обновления рецептов."""
@@ -120,18 +115,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     image = Base64ImageField()
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'name',
-            'image',
-            'text',
-            'cooking_time',
-            'tags',
-            'ingredients',
-        )
 
     def _set_ingredients(self, recipe, ingredients_data):
         """
