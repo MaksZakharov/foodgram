@@ -56,7 +56,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     ingredients = IngredientAmountReadSerializer(
         many=True, source='ingredient_amounts', read_only=True
     )
-    image = Base64ImageField()
+    image = serializers.ImageField(read_only=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -115,6 +115,18 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     image = Base64ImageField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'text',
+            'cooking_time',
+            'tags',
+            'ingredients',
+        )
 
     def _set_ingredients(self, recipe, ingredients_data):
         """

@@ -40,7 +40,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     - генерацию короткой ссылки.
     """
 
-    queryset = Recipe.objects.all()
+    queryset = Recipe.objects.all().order_by('-id')
     permission_classes = (IsAuthorOrReadOnly,)
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter

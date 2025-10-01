@@ -14,7 +14,7 @@ class RecipeFilter(django_filters.FilterSet):
     - проверку, добавлен ли рецепт в список покупок.
     """
 
-    tags = django_filters.AllValuesMultipleFilter(field_name='tags__slug')
+    tags = django_filters.CharFilter(field_name='tags__slug', lookup_expr='in')
     is_favorited = django_filters.BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = django_filters.BooleanFilter(
         method='filter_is_in_shopping_cart'

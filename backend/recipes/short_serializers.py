@@ -1,4 +1,3 @@
-from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from .models import Recipe
@@ -7,7 +6,7 @@ from .models import Recipe
 class ShortRecipeSerializer(serializers.ModelSerializer):
     """Короткий сериализатор для рецепта (ReDoc)."""
 
-    image = Base64ImageField()
+    image = serializers.ImageField()
 
     class Meta:
         model = Recipe
