@@ -102,7 +102,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     def get_is_in_shopping_cart(self, obj):
         """Проверяет, добавлен ли рецепт в корзину текущего пользователя."""
-        return self._is_related(obj, 'shopping_cart')
+        return self._is_related(obj, 'shoppingcarts')
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
@@ -144,7 +144,8 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
 
     def create(self, validated_data):
-        """Создаёт рецепт с тегами и ингредиентами."""
+        """Создаёт рецепт с автором, тегами и ингредиентами."""
+        validated_data['author'] = self.context['request'].user
         ingredients_data = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)

@@ -1,6 +1,7 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
@@ -58,34 +59,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         return serializer.data
 
-    def perform_create(self, serializer):
-        """Создаёт рецепт с автором."""
-        recipe = serializer.save(author=self.request.user)
-        self.response_data = self._serialize_recipe(recipe)
-
-    def perform_update(self, serializer):
-        """Обновляет рецепт и сериализует его для ответа."""
-        recipe = serializer.save()
-        self.response_data = self._serialize_recipe(recipe)
-
-    def create(self, request, *args, **kwargs):
-        """Создаёт рецепт и возвращает сериализованные данные."""
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(self.response_data, status=status.HTTP_201_CREATED)
-
-    def update(self, request, *args, **kwargs):
-        """Обновляет рецепт и возвращает сериализованные данные."""
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(
-            instance, data=request.data, partial=partial
-        )
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(self.response_data, status=status.HTTP_200_OK)
-
     def _handle_relation(
         self, model, request, recipe, already_msg, not_found_msg
     ):
@@ -111,14 +84,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if request.method == 'DELETE':
-            obj = model.objects.filter(user=request.user, recipe=recipe)
-            if not obj.exists():
+        else:
+            deleted_count, _ = model.objects.filter(
+                user=request.user, recipe=recipe
+            ).delete()
+            if deleted_count == 0:
                 return Response(
-                    {'errors': not_found_msg},
+                    {'detail': not_found_msg},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
@@ -128,11 +102,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk=None):
         """Добавить или удалить рецепт из избранного."""
-        recipe = self.get_object()
         return self._handle_relation(
             Favorite,
             request,
-            recipe,
+            self.get_object(),
             already_msg='Рецепт уже в избранном.',
             not_found_msg='Рецепта нет в избранном.',
         )
@@ -144,36 +117,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk=None):
         """Добавить или удалить рецепт из списка покупок."""
-        recipe = self.get_object()
         return self._handle_relation(
             ShoppingCart,
             request,
-            recipe,
+            self.get_object(),
             already_msg='Рецепт уже в списке покупок.',
             not_found_msg='Рецепта нет в списке покупок.',
         )
 
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=[permissions.IsAuthenticated],
-    )
-    def download_shopping_cart(self, request):
-        """Скачать список покупок в виде .txt файла."""
-        ingredients = (
-            IngredientAmount.objects.filter(
-                recipe__shopping_cart__user=request.user
-            )
-            .values('ingredient__name', 'ingredient__measurement_unit')
-            .annotate(total=Sum('amount'))
-            .order_by('ingredient__name')
-        )
-        if not ingredients.exists():
-            return Response(
-                {'detail': 'Список покупок пуст.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
+    def _generate_shopping_list_file(self, ingredients):
+        """Генерирует текстовый файл со списком покупок."""
         lines = [
             f'{item["ingredient__name"]} '
             f'({item["ingredient__measurement_unit"]}) — '
@@ -187,13 +140,36 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         return response
 
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def download_shopping_cart(self, request):
+        """Скачать список покупок в виде .txt файла."""
+        ingredients = (
+            IngredientAmount.objects.filter(
+                recipe__shoppingcarts__user=request.user
+            )
+            .values('ingredient__name', 'ingredient__measurement_unit')
+            .annotate(total=Sum('amount'))
+            .order_by('ingredient__name')
+        )
+
+        if not ingredients.exists():
+            return Response(
+                {'detail': 'Список покупок пуст.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return self._generate_shopping_list_file(ingredients)
+
     @action(detail=True, methods=['get'], url_path='get-link')
     def get_link(self, request, pk=None):
         """Получить короткую ссылку на рецепт."""
         recipe = get_object_or_404(Recipe, pk=pk)
-        return Response(
-            {'short-link': f'http://{request.get_host()}/s/{recipe.id}/'}
-        )
+        url = reverse('short-link', args=[recipe.id])
+        short_link = request.build_absolute_uri(url)
+        return Response({'short-link': short_link})
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
