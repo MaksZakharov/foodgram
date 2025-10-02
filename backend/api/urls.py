@@ -4,8 +4,8 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
-from recipes.views import IngredientViewSet, RecipeViewSet, TagViewSet
-from users.views import UserViewSet
+from api.views.recipes import IngredientViewSet, RecipeViewSet, TagViewSet
+from api.views.users import UserViewSet
 
 schema_view = get_schema_view(
     openapi.Info(
