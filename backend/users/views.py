@@ -5,10 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.pagination import LimitPageNumberPagination
-from api.serializers.users import SubscriptionSerializer  # noqa: F401
-from api.serializers.users import (
-    UserSerializer,
-)
+from api.serializers.users import SubscriptionSerializer, UserSerializer
 from users.models import Follow, User
 
 
@@ -67,9 +64,7 @@ class UserViewSet(DjoserUserViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
 
-            return Response(
-                {'avatar': user.avatar.url}, status=status.HTTP_200_OK
-            )
+            return Response({'avatar': user.avatar.url}, status=status.HTTP_200_OK)
 
         if user.avatar:
             user.avatar.delete(save=True)
@@ -89,17 +84,13 @@ class UserViewSet(DjoserUserViewSet):
                     {'errors': 'Нельзя подписаться на самого себя.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            if Follow.objects.filter(
-                user=request.user, author=author
-            ).exists():
+            if Follow.objects.filter(user=request.user, author=author).exists():
                 return Response(
                     {'errors': 'Вы уже подписаны на этого автора.'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             Follow.objects.create(user=request.user, author=author)
-            serializer = SubscriptionSerializer(
-                author, context={'request': request}
-            )
+            serializer = SubscriptionSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         deleted_count, _ = Follow.objects.filter(

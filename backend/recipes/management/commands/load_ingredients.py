@@ -43,7 +43,7 @@ class Command(BaseCommand):
 
         Возвращает:
             None. Сообщения выводятся в stdout/stderr.
-        """        
+        """
 
         if not os.path.exists(INGREDIENTS_FILE):
             self.stderr.write(

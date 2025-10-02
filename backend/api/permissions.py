@@ -8,7 +8,7 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
     - Любой пользователь может читать данные (GET, HEAD, OPTIONS).
     - Изменять или удалять объект может только его автор.
     """
-   
+
     def has_object_permission(self, request, view, obj):
         """
         Проверяет права доступа к конкретному объекту.
@@ -27,5 +27,4 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
             request.method in permissions.SAFE_METHODS
             or obj.author == request.user
         )
-
-
+    
