@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from api.pagination import LimitPageNumberPagination
+from api.serializers.users import SubscriptionSerializer  # noqa: F401
 from api.serializers.users import (
-    SubscriptionSerializer,  # noqa: F401
     UserSerializer,
 )
 from users.models import Follow, User
