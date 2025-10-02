@@ -60,11 +60,10 @@ class UserViewSet(DjoserUserViewSet):
                 {'avatar': user.avatar.url},
                 status=status.HTTP_200_OK,
             )
-        
+
         if user.avatar:
             user.avatar.delete(save=True)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
     def _handle_subscription(self, request, author):
         """

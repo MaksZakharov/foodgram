@@ -179,7 +179,7 @@ class Favorite(UserRecipeRelation):
             models.UniqueConstraint(
                 fields=['user', 'recipe'], name='unique_favorite'
             )
-        ]        
+        ]
 
 
 class ShoppingCart(UserRecipeRelation):
