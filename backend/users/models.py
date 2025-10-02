@@ -2,6 +2,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from users.constants import (
+    USER_EMAIL_MAX_LENGTH,
+    USER_FIRST_NAME_MAX_LENGTH,
+    USER_LAST_NAME_MAX_LENGTH,
+)
+
 
 class User(AbstractUser):
     """
@@ -11,7 +17,11 @@ class User(AbstractUser):
     - Дополнительное поле avatar.
     """
 
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(
+        _('email address'),
+        unique=True,
+        max_length=USER_EMAIL_MAX_LENGTH,
+    )
     avatar = models.ImageField(
         upload_to='users/',
         blank=True,
@@ -19,13 +29,11 @@ class User(AbstractUser):
         verbose_name='Аватар',
     )
     first_name = models.CharField(
-        max_length=150,
-        blank=False,
+        max_length=USER_FIRST_NAME_MAX_LENGTH,
         verbose_name='Имя',
     )
     last_name = models.CharField(
-        max_length=150,
-        blank=False,
+        max_length=USER_LAST_NAME_MAX_LENGTH,
         verbose_name='Фамилия',
     )
 
@@ -68,11 +76,9 @@ class Follow(models.Model):
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_follow'
-            )
+            models.UniqueConstraint(fields=['user', 'author'], name='unique_follow')
         ]
-        ordering = ('id',)
+        ordering = ('user', 'author')
 
     def __str__(self):
         """Возвращает строку вида «user подписан на author»."""
