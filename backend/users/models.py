@@ -18,12 +18,12 @@ class User(AbstractUser):
         null=True,
         verbose_name='Аватар',
     )
-    first_name = models.CharField(        
+    first_name = models.CharField(
         max_length=150,
         blank=False,
         verbose_name='Имя',
     )
-    last_name = models.CharField(        
+    last_name = models.CharField(
         max_length=150,
         blank=False,
         verbose_name='Фамилия',
