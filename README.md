@@ -131,5 +131,5 @@
 
 ## Документация API: 
 
-[http://foodgram.3utilities.com/api/docs/](http://foodgram.3utilities.com/api/docs/)
+[https://foodgram.3utilities.com/api/docs/](https://foodgram.3utilities.com/api/docs/)
 

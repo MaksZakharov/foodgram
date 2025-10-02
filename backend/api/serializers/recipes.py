@@ -87,21 +87,20 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             связан с объектом через указанное поле.
         """
         request = self.context.get('request')
-        if (
-            not request
-            or not hasattr(request, 'user')
-            or not request.user.is_authenticated
-        ):
-            return False
-        return getattr(obj, related_field).filter(user=request.user).exists()
+        return (
+            request
+            and hasattr(request, 'user')
+            and request.user.is_authenticated
+            and manager.filter(user=request.user).exists()
+        )
 
     def get_is_favorited(self, obj):
         """Проверяет, добавлен ли рецепт в избранное текущего пользователя."""
-        return self._is_related(obj, 'favorites')
+        return self._is_related(obj, obj.favorites)
 
     def get_is_in_shopping_cart(self, obj):
         """Проверяет, добавлен ли рецепт в корзину текущего пользователя."""
-        return self._is_related(obj, 'shoppingcarts')
+        return self._is_related(obj, obj.shoppingcarts)
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
