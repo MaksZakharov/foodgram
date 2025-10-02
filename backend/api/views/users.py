@@ -33,22 +33,14 @@ class UserViewSet(DjoserUserViewSet):
     )
     def avatar(self, request):
         """
-        Загрузка, обновление, удаление
-        и просмотр аватара текущего пользователя.
+        Обновление или удаление аватара текущего пользователя.
 
-        GET → вернуть ссылку на аватар.
-        POST → загрузить или обновить.
+        PUT → загрузить или обновить.
         DELETE → удалить аватар.
         """
         user = request.user
 
-        if request.method == 'GET':
-            return Response(
-                {'avatar': user.avatar.url if user.avatar else None},
-                status=status.HTTP_200_OK,
-            )
-
-        if request.method == 'POST':
+        if request.method == 'PUT':
             if not request.data.get('avatar'):
                 return Response(
                     {'error': 'Аватар не передан'},
@@ -68,10 +60,11 @@ class UserViewSet(DjoserUserViewSet):
                 {'avatar': user.avatar.url},
                 status=status.HTTP_200_OK,
             )
-
+        
         if user.avatar:
             user.avatar.delete(save=True)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
     def _handle_subscription(self, request, author):
         """
