@@ -58,12 +58,10 @@ class RecipeAdmin(admin.ModelAdmin):
     ordering = ('-pub_date',)
     inlines = (IngredientAmountInline,)
 
-    @admin.display(description="В избранном")
+    @admin.display(description='В избранном')
     def favorites_count(self, obj):
         """Количество добавлений рецепта в избранное."""
         return obj.favorites.count()
-
-    favorites_count.short_description = 'В избранном'
 
 
 class UserRecipeAdmin(admin.ModelAdmin):
@@ -77,7 +75,17 @@ class UserRecipeAdmin(admin.ModelAdmin):
 class FavoriteAdmin(UserRecipeAdmin):
     """Админка для модели Favorite."""
 
+    list_display = ('id', 'user', 'recipe')
+    search_fields = ('user__username', 'user__email', 'recipe__name')
+    list_filter = ('user', 'recipe')
+    ordering = ('user',)
+
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(UserRecipeAdmin):
     """Админка для модели ShoppingCart."""
+
+    list_display = ('id', 'user', 'recipe')
+    search_fields = ('user__username', 'user__email', 'recipe__name')
+    list_filter = ('user', 'recipe')
+    ordering = ('user',)
