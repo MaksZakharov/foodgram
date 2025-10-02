@@ -162,6 +162,7 @@ class UserRecipeRelation(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['user', 'recipe']
 
     def __str__(self) -> str:
         """Возвращает строку вида «user → recipe»."""
@@ -178,8 +179,7 @@ class Favorite(UserRecipeRelation):
             models.UniqueConstraint(
                 fields=['user', 'recipe'], name='unique_favorite'
             )
-        ]
-        ordering = ['user', 'recipe']
+        ]        
 
 
 class ShoppingCart(UserRecipeRelation):
@@ -193,4 +193,3 @@ class ShoppingCart(UserRecipeRelation):
                 fields=['user', 'recipe'], name='unique_shopping_cart'
             )
         ]
-        ordering = ['user', 'recipe']
