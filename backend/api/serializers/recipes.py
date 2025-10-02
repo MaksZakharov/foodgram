@@ -26,9 +26,7 @@ class IngredientAmountReadSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit'
-    )
+    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
 
     class Meta:
         model = IngredientAmount
@@ -74,17 +72,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'is_in_shopping_cart',
         )
 
-    def _is_related(self, obj, related_field):
+    def _is_related(self, obj, manager):
         """
         Проверяет наличие связи рецепта с пользователем.
-
-        Аргументы:
-            obj — объект рецепта.
-            related_field — имя связанного поля (favorites/shopping_cart).
-
-        Возвращает:
-            True, если текущий пользователь
-            связан с объектом через указанное поле.
         """
         request = self.context.get('request')
         return (
@@ -190,16 +180,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
 
         if len(tags) != len(set(tags)):
-            raise serializers.ValidationError(
-                {'tags': 'Теги не должны повторяться'}
-            )
+            raise serializers.ValidationError({'tags': 'Теги не должны повторяться'})
 
         return data
 
     def validate_image(self, value):
         """Проверяет, что изображение не пустое."""
         if not value:
-            raise serializers.ValidationError(
-                'Поле image обязательно для заполнения'
-            )
+            raise serializers.ValidationError('Поле image обязательно для заполнения')
         return value
