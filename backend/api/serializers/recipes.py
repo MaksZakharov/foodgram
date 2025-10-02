@@ -26,7 +26,9 @@ class IngredientAmountReadSerializer(serializers.ModelSerializer):
 
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
+    measurement_unit = serializers.ReadOnlyField(
+    source='ingredient.measurement_unit'
+ )
 
     class Meta:
         model = IngredientAmount
@@ -180,12 +182,16 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
 
         if len(tags) != len(set(tags)):
-            raise serializers.ValidationError({'tags': 'Теги не должны повторяться'})
+            raise serializers.ValidationError(
+                {'tags': 'Теги не должны повторяться'}
+            )
 
         return data
 
     def validate_image(self, value):
         """Проверяет, что изображение не пустое."""
         if not value:
-            raise serializers.ValidationError('Поле image обязательно для заполнения')
+            raise serializers.ValidationError(
+                'Поле image обязательно для заполнения'
+            )
         return value
