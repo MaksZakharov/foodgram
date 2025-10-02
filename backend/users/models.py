@@ -18,6 +18,16 @@ class User(AbstractUser):
         null=True,
         verbose_name='Аватар',
     )
+    first_name = models.CharField(        
+        max_length=150,
+        blank=False,
+        verbose_name='Имя',
+    )
+    last_name = models.CharField(        
+        max_length=150,
+        blank=False,
+        verbose_name='Фамилия',
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -25,6 +35,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        ordering = ('id',)
 
     def __str__(self):
         """Возвращает email как строковое представление пользователя."""
@@ -61,6 +72,7 @@ class Follow(models.Model):
                 fields=['user', 'author'], name='unique_follow'
             )
         ]
+        ordering = ('id',)
 
     def __str__(self):
         """Возвращает строку вида «user подписан на author»."""

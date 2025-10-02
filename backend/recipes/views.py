@@ -10,8 +10,14 @@ from rest_framework.response import Response
 
 from api.filters import RecipeFilter
 from api.permissions import IsAuthorOrReadOnly
-
-from .models import (
+from api.serializers.recipes import (
+    IngredientSerializer,
+    RecipeReadSerializer,
+    RecipeWriteSerializer,
+    TagSerializer,
+)
+from api.serializers.short_recipes import ShortRecipeSerializer
+from recipes.models import (
     Favorite,
     Ingredient,
     IngredientAmount,
@@ -19,13 +25,6 @@ from .models import (
     ShoppingCart,
     Tag,
 )
-from .serializers import (
-    IngredientSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    TagSerializer,
-)
-from .short_serializers import ShortRecipeSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

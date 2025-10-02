@@ -1,39 +1,18 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserSerializer as BaseUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.short_serializers import ShortRecipeSerializer
-
-from .models import User
-
-
-class CustomUserCreateSerializer(UserCreateSerializer):
-    """Сериализатор для регистрации пользователей."""
-
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = (
-            'id',
-            'email',
-            'username',
-            'first_name',
-            'last_name',
-            'password',
-        )
-        extra_kwargs = {
-            'password': {'write_only': True},
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-        }
+from users.models import User
 
 
-class CustomUserSerializer(UserSerializer):
+class UserSerializer(BaseUserSerializer):
     """Сериализатор для отображения информации о пользователе."""
 
     is_subscribed = serializers.SerializerMethodField()
     avatar = Base64ImageField(required=False, allow_null=True)
 
-    class Meta(UserSerializer.Meta):
+    class Meta(BaseUserSerializer.Meta):
         model = User
         fields = (
             'id',
@@ -70,32 +49,17 @@ class CustomUserSerializer(UserSerializer):
         return self._check_subscription(request, obj)
 
 
-class SubscriptionSerializer(serializers.ModelSerializer):
+class SubscriptionSerializer(UserSerializer):
     """Сериализатор для отображения подписки с рецептами автора."""
 
-    is_subscribed = serializers.SerializerMethodField()
-    avatar = Base64ImageField(required=False, allow_null=True)
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
-    class Meta:
-        model = User
-        fields = (
-            'id',
-            'email',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'avatar',
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + (
             'recipes',
             'recipes_count',
         )
-
-    def get_is_subscribed(self, obj):
-        """Определяет, подписан ли текущий пользователь на obj."""
-        request = self.context.get('request')
-        return CustomUserSerializer._check_subscription(request, obj)
 
     def get_recipes(self, obj):
         """
