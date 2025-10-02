@@ -1,18 +1,15 @@
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from .models import Follow, User
-from .serializers import SubscriptionSerializer  # noqa: F401
-from .serializers import CustomUserSerializer
-
-
-class LimitPagination(PageNumberPagination):
-    """Кастомная пагинация с параметром limit."""
-
-    page_size_query_param = 'limit'
+from api.pagination import LimitPageNumberPagination
+from api.serializers.users import (
+    SubscriptionSerializer,  # noqa: F401
+    UserSerializer,
+)
+from users.models import Follow, User
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -26,19 +23,14 @@ class UserViewSet(DjoserUserViewSet):
     """
 
     queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = UserSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'id'
-
-    def get_permissions(self):
-        """Определяет права доступа для разных действий."""
-        if self.action in ['list', 'retrieve', 'create']:
-            return [permissions.AllowAny()]
-        return [permissions.IsAuthenticated()]
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @action(
         detail=False,
-        methods=['get', 'post', 'put', 'delete'],
+        methods=['get', 'post', 'delete'],
         url_path='me/avatar',
         permission_classes=[permissions.IsAuthenticated],
     )
@@ -48,29 +40,25 @@ class UserViewSet(DjoserUserViewSet):
         и просмотр аватара текущего пользователя.
 
         GET → вернуть ссылку на аватар.
-        POST/PUT → загрузить или обновить.
+        POST → загрузить или обновить.
         DELETE → удалить аватар.
         """
         user = request.user
 
         if request.method == 'GET':
-            if not user.avatar:
-                return Response(
-                    {'error': 'Аватар не установлен'},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
             return Response(
-                {'avatar': user.avatar.url}, status=status.HTTP_200_OK
+                {'avatar': user.avatar.url if user.avatar else None},
+                status=status.HTTP_200_OK,
             )
 
-        if request.method in ['POST', 'PUT']:
+        if request.method == 'POST':
             if not request.data.get('avatar'):
                 return Response(
                     {'error': 'Аватар не передан'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            serializer = CustomUserSerializer(
+            serializer = UserSerializer(
                 user,
                 data=request.data,
                 partial=True,
@@ -83,12 +71,9 @@ class UserViewSet(DjoserUserViewSet):
                 {'avatar': user.avatar.url}, status=status.HTTP_200_OK
             )
 
-        if request.method == 'DELETE':
-            if user.avatar:
-                user.avatar.delete(save=True)
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if user.avatar:
+            user.avatar.delete(save=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def _handle_subscription(self, request, author):
         """
@@ -117,17 +102,16 @@ class UserViewSet(DjoserUserViewSet):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if request.method == 'DELETE':
-            subscription = Follow.objects.filter(
-                user=request.user, author=author
+        deleted_count, _ = Follow.objects.filter(
+            user=request.user, author=author
+        ).delete()
+
+        if deleted_count == 0:
+            return Response(
+                {'errors': 'Вы не подписаны на этого пользователя.'},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-            if not subscription.exists():
-                return Response(
-                    {'errors': 'Вы не подписаны на этого пользователя.'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            subscription.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -147,7 +131,7 @@ class UserViewSet(DjoserUserViewSet):
     def subscriptions(self, request):
         """Список авторов, на которых подписан текущий пользователь."""
         authors = User.objects.filter(following__user=request.user)
-        paginator = LimitPagination()
+        paginator = LimitPageNumberPagination()
         page = paginator.paginate_queryset(authors, request)
         serializer = SubscriptionSerializer(
             page, many=True, context={'request': request}
