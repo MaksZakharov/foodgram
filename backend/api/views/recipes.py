@@ -39,7 +39,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     - фильтрацию по тегам и авторам;
     - генерацию короткой ссылки.
     """
-    
+
     permission_classes = (IsAuthorOrReadOnly,)
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
@@ -69,7 +69,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # ... (этот метод остается без изменений)
         if self.request.method in ('POST', 'PATCH', 'PUT'):
             return RecipeWriteSerializer
-        return RecipeReadSerializer    
+        return RecipeReadSerializer
 
     def _serialize_recipe(self, recipe):
         """Сериализует рецепт для ответа после create/update."""
@@ -189,7 +189,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url = reverse('short-link', args=[recipe.id])
         short_link = request.build_absolute_uri(url)
         return Response({'short-link': short_link})
-    
+
     @action(
         detail=False,
         methods=['get'],
