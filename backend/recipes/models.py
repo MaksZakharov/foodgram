@@ -172,7 +172,7 @@ class UserRecipeRelation(models.Model):
 class Favorite(UserRecipeRelation):
     """Избранные рецепты пользователя."""
 
-    class Meta:
+    class Meta(UserRecipeRelation.Meta):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         constraints = [
@@ -185,7 +185,7 @@ class Favorite(UserRecipeRelation):
 class ShoppingCart(UserRecipeRelation):
     """Список покупок пользователя."""
 
-    class Meta:
+    class Meta(UserRecipeRelation.Meta):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         constraints = [
