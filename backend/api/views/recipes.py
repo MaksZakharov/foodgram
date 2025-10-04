@@ -39,17 +39,37 @@ class RecipeViewSet(viewsets.ModelViewSet):
     - фильтрацию по тегам и авторам;
     - генерацию короткой ссылки.
     """
-
-    queryset = Recipe.objects.all().order_by('-id')
+    
     permission_classes = (IsAuthorOrReadOnly,)
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
+    def get_queryset(self):
+        """
+        Возвращает отфильтрованный набор рецептов.
+        Фильтрует по is_favorited и is_in_shopping_cart.
+        """
+        user = self.request.user
+        queryset = Recipe.objects.all()
+
+        is_favorited = self.request.query_params.get('is_favorited')
+        if is_favorited in ('true', '1'):
+            if user.is_authenticated:
+                queryset = queryset.filter(favorites__user=user)
+
+        is_in_shopping_cart = self.request.query_params.get('is_in_shopping_cart')
+        if is_in_shopping_cart in ('true', '1'):
+            if user.is_authenticated:
+                queryset = queryset.filter(shoppingcarts__user=user)
+
+        return queryset.order_by('-id')
+
     def get_serializer_class(self):
         """Возвращает сериализатор в зависимости от метода запроса."""
+        # ... (этот метод остается без изменений)
         if self.request.method in ('POST', 'PATCH', 'PUT'):
             return RecipeWriteSerializer
-        return RecipeReadSerializer
+        return RecipeReadSerializer    
 
     def _serialize_recipe(self, recipe):
         """Сериализует рецепт для ответа после create/update."""
@@ -169,6 +189,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url = reverse('short-link', args=[recipe.id])
         short_link = request.build_absolute_uri(url)
         return Response({'short-link': short_link})
+    
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[permissions.IsAuthenticated]
+    )
+    def shopping_cart_count(self, request):
+        """Возвращает количество рецептов в списке покупок."""
+        count = ShoppingCart.objects.filter(user=request.user).count()
+        return Response({'count': count}, status=status.HTTP_200_OK)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
