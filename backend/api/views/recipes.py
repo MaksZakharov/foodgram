@@ -57,7 +57,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if user.is_authenticated:
                 queryset = queryset.filter(favorites__user=user)
 
-        is_in_shopping_cart = self.request.query_params.get('is_in_shopping_cart')
+        is_in_shopping_cart = self.request.query_params.get(
+            'is_in_shopping_cart'
+        )
         if is_in_shopping_cart in ('true', '1'):
             if user.is_authenticated:
                 queryset = queryset.filter(shoppingcarts__user=user)
