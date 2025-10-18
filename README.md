@@ -124,12 +124,3 @@
 ## Автор проекта
 
 **Maks Zakharov**
-
-## Проект доступен по адресу:
-
-[foodgram.3utilities.com](http://foodgram.3utilities.com)
-
-## Документация API: 
-
-[https://foodgram.3utilities.com/api/docs/](https://foodgram.3utilities.com/api/docs/)
-
