@@ -1,4 +1,4 @@
-# Foodgram — продуктовый помощник
+# 📌 Foodgram — продуктовый помощник
 
 ![Foodgram CI/CD](https://github.com/MaksZakharov/foodgram/actions/workflows/main.yml/badge.svg)
 
@@ -9,118 +9,181 @@
 [![Docker](https://img.shields.io/badge/Docker-20+-blue.svg)](https://www.docker.com/)
 [![NGINX](https://img.shields.io/badge/NGINX-reverse--proxy-brightgreen.svg)](https://nginx.org/)
 
-**Foodgram** — это онлайн-сервис для публикации и хранения рецептов.  
-Здесь пользователи могут делиться любимыми блюдами, сохранять рецепты в избранное и формировать список покупок.
-
-Проект создан в рамках обучения в **Яндекс Практикуме**, но полностью реализован самостоятельно. 
+**Foodgram** — это веб-сервис для публикации рецептов и автоматизации процесса покупки ингредиентов.  
+Пользователи могут сохранять рецепты, подписываться на авторов и формировать список покупок на основе выбранных блюд.
 
 ---
 
-## Возможности проекта
+## 📖 Описание проекта
 
-- Регистрация и авторизация пользователей.
-- Публикация рецептов с фотографиями, ингредиентами и тегами.
-- Подписка на других авторов и просмотр их рецептов.
-- Добавление рецептов в избранное.
-- Формирование списка покупок с возможностью скачать его в текстовом файле.
-- Фильтрация рецептов по тегам.
-- Поддержка пагинации и ограничений (`limit`).
+Проект решает практическую задачу: **упрощает планирование питания и закупку продуктов**.  
+Вместо хранения рецептов в разных источниках пользователь получает единое пространство, где можно:
 
----
+- хранить и структурировать рецепты  
+- быстро находить интересные блюда  
+- автоматически формировать список покупок  
 
-## Технологии
+### 🎯 Цель проекта
 
-- **Backend**: Python 3.10, Django, Django REST Framework, Djoser  
-- **Frontend**: React, Node.js  
-- **База данных**: PostgreSQL  
-- **Инфраструктура**: Docker, docker-compose, Gunicorn, Nginx  
-- **Документация API**: ReDoc (OpenAPI)  
+- Практика разработки backend-приложения на Django + DRF  
+- Реализация полноценного REST API  
+- Работа с авторизацией, подписками и пользовательским контентом  
+- Развёртывание проекта с использованием Docker и Nginx  
 
 ---
 
-## Установка и запуск проекта (Docker)
+## 🚀 Основные возможности
 
-1. Клонируйте репозиторий:
-   ```bash
-   git clone <ссылка_на_репозиторий>
-   cd foodgram/infra
-   ```
-
-2. Создайте файл `.env` в директории `infra/` и заполните его переменными окружения:
-   ```env
-   DB_ENGINE=django.db.backends.postgresql
-   DB_NAME=postgres
-   POSTGRES_USER=postgres
-   POSTGRES_PASSWORD=postgres
-   DB_HOST=db
-   DB_PORT=5432
-
-   SECRET_KEY=секретный_ключ_django
-   DEBUG=False
-   ALLOWED_HOSTS=127.0.0.1,localhost
-   ```
-
-3. Поднимите контейнеры:
-   ```bash
-   docker compose up -d --build
-   ```
-
-4. Выполните миграции, создайте суперпользователя и соберите статику:
-   ```bash
-   docker compose exec backend python manage.py migrate
-   docker compose exec backend python manage.py createsuperuser
-   docker compose exec backend python manage.py collectstatic --noinput
-   ```
-
-5. Загрузите ингредиенты:
-   ```bash
-   docker compose exec backend python manage.py load_ingredients
-   ```
+- Регистрация и аутентификация пользователей  
+- Публикация рецептов (ингредиенты, теги, изображения)  
+- Подписка на авторов  
+- Добавление рецептов в избранное  
+- Формирование списка покупок  
+- Выгрузка списка покупок в `.txt`  
+- Фильтрация рецептов по тегам  
+- Пагинация и ограничение выдачи  
 
 ---
 
-## Доступ к сервису
+## 🛠 Технологический стек
 
-- Главная страница: [http://localhost](http://localhost)  
-- API: [http://localhost/api/](http://localhost/api/)  
-- Документация API: [http://localhost/api/docs/](http://localhost/api/docs/)  
+**Backend:**
+- Python 3.10  
+- Django  
+- Django REST Framework  
+- Djoser  
+
+**Frontend:**
+- React  
+- Node.js  
+
+**База данных:**
+- PostgreSQL  
+
+**Инфраструктура:**
+- Docker / docker-compose  
+- Gunicorn  
+- Nginx  
+
+**Документация API:**
+- OpenAPI (ReDoc)  
 
 ---
 
-## Примеры API-запросов
+## ⚙️ Установка и запуск (Docker)
 
-- **Регистрация пользователя**
+### Требования:
+- Docker 20+  
+- docker-compose  
+
+---
+
+### 1. Клонирование репозитория
+
+```bash
+git clone <ссылка_на_репозиторий>
+cd foodgram/infra
+```
+
+---
+
+### 2. Настройка переменных окружения
+
+Создайте файл `.env` в директории `infra/`:
+
+```env
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+
+SECRET_KEY=your_secret_key
+DEBUG=False
+ALLOWED_HOSTS=127.0.0.1,localhost
+```
+
+---
+
+### 3. Запуск контейнеров
+
+```bash
+docker compose up -d --build
+```
+
+---
+
+### 4. Подготовка приложения
+
+```bash
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py collectstatic --noinput
+```
+
+---
+
+### 5. Загрузка данных
+
+```bash
+docker compose exec backend python manage.py load_ingredients
+```
+
+---
+
+## 🌐 Доступ к сервису
+
+- Главная страница: http://localhost  
+- API: http://localhost/api/  
+- Документация: http://localhost/api/docs/  
+
+---
+
+## 📡 Примеры API-запросов
+
+- Регистрация пользователя  
   ```
   POST /api/users/
   ```
 
-- **Получение токена**
+- Получение токена  
   ```
   POST /api/auth/token/login/
   ```
 
-- **Список рецептов**
+- Получение списка рецептов  
   ```
   GET /api/recipes/
   ```
 
-- **Добавить в избранное**
+- Добавление в избранное  
   ```
   POST /api/recipes/{id}/favorite/
   ```
 
-- **Подписка на автора**
+- Подписка на автора  
   ```
   POST /api/users/{id}/subscribe/
   ```
 
-- **Скачать список покупок**
+- Скачать список покупок  
   ```
   GET /api/recipes/download_shopping_cart/
   ```
 
 ---
 
-## Автор проекта
+## 🔮 Планы по доработке
+
+- Добавить кеширование (Redis) для ускорения выдачи рецептов  
+- Реализовать систему лайков и рейтинга рецептов  
+- Добавить unit и integration тесты (pytest)  
+- Настроить CI/CD с автоматическим деплоем  
+- Ограничить частоту запросов (rate limiting)  
+
+---
+
+## 👤 Автор
 
 **Maks Zakharov**
