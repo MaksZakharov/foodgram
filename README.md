@@ -1,6 +1,6 @@
 # 📌 Foodgram — продуктовый помощник
 
-![Foodgram CI/CD](https://github.com/MaksZakharov/foodgram/actions/workflows/main.yml/badge.svg)
+# ![Foodgram CI/CD](https://github.com/MaksZakharov/foodgram/actions/workflows/main.yml/badge.svg)
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.x-green.svg)](https://www.djangoproject.com/)
@@ -23,12 +23,21 @@
 - быстро находить интересные блюда  
 - автоматически формировать список покупок  
 
-### 🎯 Цель проекта
+## 🧠 Что реализовал
 
-- Практика разработки backend-приложения на Django + DRF  
-- Реализация полноценного REST API  
-- Работа с авторизацией, подписками и пользовательским контентом  
-- Развёртывание проекта с использованием Docker и Nginx  
+-   Разработал REST API для рецептов, пользователей и подписок
+-   Реализовал бизнес-логику:
+    -   избранное
+    -   список покупок с агрегацией ингредиентов
+    -   подписки на авторов
+-   Настроил аутентификацию (Djoser, JWT)
+-   Реализовал permissions, фильтрацию и пагинацию
+-   Спроектировал модели данных (включая through-модели)
+-   Оптимизировал запросы (select_related, prefetch_related)
+-   Настроил инфраструктуру:
+    -   Docker / docker-compose
+    -   Gunicorn + Nginx
+-   Подготовил production-конфигурацию
 
 ---
 
@@ -67,6 +76,14 @@
 
 **Документация API:**
 - OpenAPI (ReDoc)  
+
+---
+
+## 🚀 Деплой
+
+Проект разворачивал на удалённом сервере с использованием Docker,
+Gunicorn и Nginx.\
+Настраивал CI/CD pipeline для автоматического деплоя.
 
 ---
 
@@ -178,8 +195,7 @@ docker compose exec backend python manage.py load_ingredients
 
 - Добавить кеширование (Redis) для ускорения выдачи рецептов  
 - Реализовать систему лайков и рейтинга рецептов  
-- Добавить unit и integration тесты (pytest)  
-- Настроить CI/CD с автоматическим деплоем  
+- Покрыть проект тестами (pytest)  
 - Ограничить частоту запросов (rate limiting)  
 
 ---
