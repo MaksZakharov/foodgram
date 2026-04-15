@@ -1,4 +1,4 @@
-# 📌 Foodgram — продуктовый помощник
+# Foodgram — продуктовый помощник
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-4.x-green.svg)](https://www.djangoproject.com/)
@@ -9,8 +9,6 @@
 
 **Foodgram** — это веб-сервис для публикации рецептов и автоматизации процесса покупки ингредиентов.  
 Пользователи могут сохранять рецепты, подписываться на авторов и формировать список покупок на основе выбранных блюд.
-
----
 
 ## 📖 Описание проекта
 
@@ -37,8 +35,6 @@
     -   Gunicorn + Nginx
 -   Подготовил production-конфигурацию
 
----
-
 ## 🚀 Основные возможности
 
 - Регистрация и аутентификация пользователей  
@@ -49,8 +45,6 @@
 - Выгрузка списка покупок в `.txt`  
 - Фильтрация рецептов по тегам  
 - Пагинация и ограничение выдачи  
-
----
 
 ## 🛠 Технологический стек
 
@@ -75,15 +69,11 @@
 **Документация API:**
 - OpenAPI (ReDoc)  
 
----
-
 ## 🚀 Деплой
 
 Проект разворачивал на удалённом сервере с использованием Docker,
 Gunicorn и Nginx.\
 Настраивал CI/CD pipeline для автоматического деплоя.
-
----
 
 ## ⚙️ Установка и запуск (Docker)
 
@@ -91,16 +81,12 @@ Gunicorn и Nginx.\
 - Docker 20+  
 - docker-compose  
 
----
-
 ### 1. Клонирование репозитория
 
 ```bash
 git clone <ссылка_на_репозиторий>
 cd foodgram/infra
 ```
-
----
 
 ### 2. Настройка переменных окружения
 
@@ -119,15 +105,11 @@ DEBUG=False
 ALLOWED_HOSTS=127.0.0.1,localhost
 ```
 
----
-
 ### 3. Запуск контейнеров
 
 ```bash
 docker compose up -d --build
 ```
-
----
 
 ### 4. Подготовка приложения
 
@@ -137,23 +119,17 @@ docker compose exec backend python manage.py createsuperuser
 docker compose exec backend python manage.py collectstatic --noinput
 ```
 
----
-
 ### 5. Загрузка данных
 
 ```bash
 docker compose exec backend python manage.py load_ingredients
 ```
 
----
-
 ## 🌐 Доступ к сервису
 
 - Главная страница: http://localhost  
 - API: http://localhost/api/  
 - Документация: http://localhost/api/docs/  
-
----
 
 ## 📡 Примеры API-запросов
 
@@ -187,17 +163,9 @@ docker compose exec backend python manage.py load_ingredients
   GET /api/recipes/download_shopping_cart/
   ```
 
----
-
 ## 🔮 Планы по доработке
 
 - Добавить кеширование (Redis) для ускорения выдачи рецептов  
 - Реализовать систему лайков и рейтинга рецептов  
 - Покрыть проект тестами (pytest)  
-- Ограничить частоту запросов (rate limiting)  
-
----
-
-## 👤 Автор
-
-**Maks Zakharov**
+- Ограничить частоту запросов (rate limiting)
